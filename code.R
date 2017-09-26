@@ -1,3 +1,4 @@
+
 ##############################naive bayes train data#####################
 trainx <- train$x[1:10000,]
 trainy <- train$y[1:10000]

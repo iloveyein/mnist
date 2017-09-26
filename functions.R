@@ -1,6 +1,7 @@
 ############ functions ################
 
-binarize <- function(datax){
+#pixel is assigned a value of 0 or 1 based on intensity of that pixel
+binarize  <- function(datax){
   for (i in 1:dim(datax)[1]){
     for(k in 1:dim(datax)[2]){
       if(datax[i,k]/255 > 0.5){
@@ -15,7 +16,7 @@ binarize <- function(datax){
 }
 
 
-
+#gets map estimate of theta
 get_thetamap <- function(datax, classvector){
   pixelcount1 <- matrix(0, nrow = 784, ncol = 10)
   pixelcount0 <- matrix(0, nrow = 784, ncol = 10)
@@ -30,14 +31,18 @@ get_thetamap <- function(datax, classvector){
   thetamap
 }
 
-
-
+#plots a given picture 
 plot_image <- function(image){
   grays = rgb(red = 0:255/255, blue = 0:255/255, green = 0:255/255)
   imagematrix <- matrix(image, nrow = 28, ncol = 28)
   heatmap(t(imagematrix),Rowv=NA,Colv=NA,col=grays, scale = "none", revC = T, xlab = '', ylab = '', margins = c(0,0), keep.dendro = F)
 }
-help(heatmap)
+
+#avoid numerical issues
+logsumexp <- function(a){
+  m = max(a)
+  log(sum(exp(a-m))) + m
+}
 
 
 pixelcount1 <- matrix(0, nrow = 784, ncol = 10)
@@ -50,6 +55,8 @@ for (d in 1:784){
 }
 
 ################################################################################bayes##
+
+#predicts class based on  which digit has the highest log likelihood
 predict_class <- function(thetamap, testimage){
   tmp <- rep(0, 784)
   x <- rep(0, 10)
@@ -69,7 +76,7 @@ predict_class <- function(thetamap, testimage){
 
 max(trainy)
 
-
+#avoiding numerical issues
 logsumexp <- function(a){
   m = max(a)
   log(sum(exp(a-m))) + m
@@ -90,6 +97,8 @@ test_model <- function(testdata, labels, thetamap){
 }
 ###function returns vector with index[1] = accuracy and rest is mean pred log likelihood
 
+
+
 ############LOGISTIC ################################################
 
 predict_class_logistic <- function(w, image){
@@ -101,6 +110,7 @@ predict_class_logistic <- function(w, image){
   c(logclassprob, guess)
 }
 
+#gradient of the weight matrix
 grad <- function(weights, imagelabel, image){
   probc <- rep(0, 10)
   gradient <- matrix(0, nrow = 784, ncol = 10)
@@ -119,7 +129,6 @@ str(w + g1[[1]]*stepsize)
 t(w + g1[[1]]*stepsize)%*%image
 
 
-
 logistic_likelihood <- function(w, image){
   loglike <- rep(0, 10)
   for(c in 1:10){
@@ -127,13 +136,6 @@ logistic_likelihood <- function(w, image){
   }
   loglike
 }
-
-
-
-predict_class_logistic(w, image)
-plot_image(image)
-
-
 
 grad2 <- function(weights, imagelabels, imagedata){
   probc <- rep(0, 10)
@@ -146,11 +148,6 @@ grad2 <- function(weights, imagelabels, imagedata){
   }
   gradient
 }
-
-
-
-
-
 
 predict_class_logistic <- function(w, image){
   logclassprob <- rep(0, 10)
